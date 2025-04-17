@@ -4,8 +4,8 @@ import type { Metadata } from "next";
 import AllTransaction from "@components/transaction/all";
 
 export const metadata: Metadata = {
-  title: "Admin | Dashboard",
-  description: "Dashboard",
+  title: "Admin | All Transaction",
+  description: "All Transaction",
 };
 
 const AllTransactionPage: React.FC = () => {
