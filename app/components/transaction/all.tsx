@@ -58,6 +58,12 @@ const AllTransaction: React.FC = () => {
       width: "70px",
     },
     {
+      name: "App",
+      selector: (row: AllTransactionPayment) => row.app,
+      sortable: false,
+      width: "250px",
+    },
+    {
       name: "Order ID",
       selector: (row: AllTransactionPayment) => row.order_id,
       sortable: false,
