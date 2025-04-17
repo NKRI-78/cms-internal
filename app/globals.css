@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #FAF9F6;
+    --foreground: #ededed;
+  }
+}
+
+
+
+.richtext-justify-between {
+  justify-content: end !important;
+}
+
+.richtext-justify-between span {
+  font-size: 12px !important;
+  color: #919191;
+}
+
+.richtext-flex button svg {
+  color: #919191;
+}
+
+.richtext-flex button div div {
+  color: #919191;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+p {
+  color: #171717;
+}
+
+.bg-red {
+  background-color: #C82927;
+}
+
+.bg-blue {
+  background-color: #2583cf;
+}
+
+.richtext-outline {
+  outline-style: none !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+select {
+  background: transparent;
+  /* SVG with white fill */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 15 15' fill='white' xmlns='http://www.w3.org/2000/svg' stroke='%234a5568'%3E%3Cg id='SVGRepo_bgCarrier' stroke-width='0'%3E%3C/g%3E%3Cg id='SVGRepo_tracerCarrier' stroke-linecap='round' stroke-linejoin='round'%3E%3C/g%3E%3Cg id='SVGRepo_iconCarrier'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M3.13523 6.15803C3.3241 5.95657 3.64052 5.94637 3.84197 6.13523L7.5 9.56464L11.158 6.13523C11.3595 5.94637 11.6759 5.95657 11.8648 6.15803C12.0536 6.35949 12.0434 6.67591 11.842 6.86477L7.84197 10.6148C7.64964 10.7951 7.35036 10.7951 7.15803 10.6148L3.15803 6.86477C2.95657 6.67591 2.94637 6.35949 3.13523 6.15803Z' fill='%23ffffff'%3E%3C/path%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: 14px;
+  background-position-x: 90%;
+  background-position-y: 12px;
+}
+
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
