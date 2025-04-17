@@ -68,7 +68,7 @@ const PPOBTransaction: React.FC = () => {
       name: "No Invoice",
       selector: (row: PPOBListTransaction) => row.value,
       sortable: true,
-      width: "150px",
+      width: "250px",
     },
     {
       name: "ID Pel",

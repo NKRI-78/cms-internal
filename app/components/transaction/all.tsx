@@ -61,7 +61,7 @@ const AllTransaction: React.FC = () => {
       name: "Order ID",
       selector: (row: AllTransactionPayment) => row.order_id,
       sortable: false,
-      width: "190px",
+      width: "250px",
     },
     {
       name: "Gross Amount",
