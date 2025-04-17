@@ -52,7 +52,7 @@ const Login: React.FC = () => {
         sameSite: "strict",
       });
         
-      router.push("/dashboard");
+      router.push("/all-transaction");
     }
     
     setTimeout(() => {

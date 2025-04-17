@@ -10,14 +10,15 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   setIsLoading,
   setError,
-  fetchPpobListTransactionAsync,
+  fetchAllTransactionAsync,
 } from "@redux/slices/userSlice";
 
-import { PPOBListTransaction } from "@/app/interfaces/ppob/list_transaction";
+import { AllTransactionPayment } from "@interfaces/transaction/all_transaction";
+import { formatDate, formatRupiah } from "@lib/utils";
 
 const AllTransaction: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const transactions = useSelector((state: RootState) => state.users.transactions)
+  const transactions = useSelector((state: RootState) => state.users.allTransaction)
   const isLoading = useSelector((state: RootState) => state.users.isLoading);
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -38,10 +39,9 @@ const AllTransaction: React.FC = () => {
   const filteredTransaction = useMemo(() => {
     const search = debouncedSearch.toLowerCase();
     return transactions
-      .filter((ppob: PPOBListTransaction) => {
-        const appName = ppob.app?.name.toString().toLowerCase() || "";
-        const invoice = ppob.value.toString().toLowerCase() || "";
-        return appName.includes(search) || invoice.includes(search)
+      .filter((transaction: AllTransactionPayment) => {
+        const orderId = transaction.order_id.toString().toLowerCase() || "";
+        return orderId.includes(search)
       })
       .sort(
         (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
@@ -51,41 +51,48 @@ const AllTransaction: React.FC = () => {
   const columns: any = [
     {
       name: "No",
-      cell: (_: PPOBListTransaction, index: number) => (
+      cell: (_: AllTransactionPayment, index: number) => (
         <span>{(currentPage - 1) * rowsPerPage + index + 1}</span>
       ),
       sortable: false,
       width: "70px",
     },
     {
-      name: "App",
-      selector: (row: PPOBListTransaction) => row.app.name,
+      name: "Order ID",
+      selector: (row: AllTransactionPayment) => row.order_id,
+      sortable: false,
+      width: "190px",
+    },
+    {
+      name: "Gross Amount",
+      selector: (row: AllTransactionPayment) =>  formatRupiah(row.gross_amount),
       sortable: false,
       width: "150px",
     },
     {
-      name: "No Invoice",
-      selector: (row: PPOBListTransaction) => row.value,
+      name: "Total Amount",
+      selector: (row: AllTransactionPayment) => formatRupiah(row.total_amount),
       sortable: true,
+      width: "150px",
     },
     {
-      name: "ID Pel",
-      selector: (row: PPOBListTransaction) => row.idpel,
+      name: "Status",
+      selector: (row: AllTransactionPayment) => row.transaction_status,
       sortable: true,
-      width: "200px",
+      width: "150px",
     },
     {
-      name: "Product",
-      selector: (row: PPOBListTransaction) => row.product,
+      name: "Date",
+      selector: (row: AllTransactionPayment) => formatDate(row.created_at),
       sortable: true,
-      width: "200px",
-    },
+      width: "150px",
+    }
   ];
 
   useEffect(() => {
     dispatch(setIsLoading(true));
     try {
-      dispatch(fetchPpobListTransactionAsync());
+      dispatch(fetchAllTransactionAsync());
     } catch (error) {
       dispatch(setError((error as Error).message));
     } finally {
@@ -97,7 +104,7 @@ const AllTransaction: React.FC = () => {
     <div className="flex items-center w-full justify-between my-1">
       <input
         type="text"
-        placeholder="Search by App or No Invoice"
+        placeholder="Search by Order ID"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         className="border border-gray-300 rounded text-sm text-black p-2 w-1/2"

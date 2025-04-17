@@ -1,10 +1,9 @@
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
-export const fetchListTransaction = async () => {
+export const fetchAllTransaction = async () => {
   try {
-    const response = await axios.get('https://api-internal.langitdigital78.com/api/v1/ppob/transaction-list');
-    console.log(response.data.data)
+    const response = await axios.get('https://api-internal.langitdigital78.com/api/v1/payment/transaction-list');
     const data = response.data.data;
     return data;
   } catch (e: any) {
@@ -21,7 +20,6 @@ export const fetchListTransaction = async () => {
 export const fetchPpobListTransaction = async () => {
   try {
     const response = await axios.get('https://api-internal.langitdigital78.com/api/v1/ppob/transaction-list');
-    console.log(response.data.data)
     const data = response.data.data;
     return data;
   } catch (e: any) {

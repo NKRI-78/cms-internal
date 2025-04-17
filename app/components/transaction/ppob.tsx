@@ -13,7 +13,8 @@ import {
   fetchPpobListTransactionAsync,
 } from "@redux/slices/userSlice";
 
-import { PPOBListTransaction } from "@/app/interfaces/ppob/list_transaction";
+import { PPOBListTransaction } from "@/app/interfaces/transaction/list_transaction";
+import { formatDate, formatRupiah } from "@/app/lib/utils";
 
 const PPOBTransaction: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -67,18 +68,25 @@ const PPOBTransaction: React.FC = () => {
       name: "No Invoice",
       selector: (row: PPOBListTransaction) => row.value,
       sortable: true,
+      width: "150px",
     },
     {
       name: "ID Pel",
       selector: (row: PPOBListTransaction) => row.idpel,
       sortable: true,
-      width: "200px",
+      width: "150px",
     },
     {
       name: "Product",
       selector: (row: PPOBListTransaction) => row.product,
       sortable: true,
-      width: "200px",
+      width: "150px",
+    },
+    {
+      name: "Date",
+      selector: (row: PPOBListTransaction) => formatDate(row.created_at),
+      sortable: true,
+      width: "150px",
     },
   ];
 

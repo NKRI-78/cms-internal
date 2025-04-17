@@ -3,13 +3,20 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from '@interfaces/users/users';
 import { UserLatestLocation } from '@interfaces/users/user-latest-location';
 
-import { fetchPpobListTransaction } from '@/app/lib/transactionService';
-import { PPOBListTransaction } from '@/app/interfaces/ppob/list_transaction';
+import { fetchAllTransaction, fetchPpobListTransaction } from '@lib/transactionService';
+import { PPOBListTransaction } from '@/app/interfaces/transaction/list_transaction';
+import { AllTransactionPayment } from '@/app/interfaces/transaction/all_transaction';
 
-export const fetchPpobListTransactionAsync = createAsyncThunk(
-  'ppob/list-transaction',
+export const fetchPpobListTransactionAsync = createAsyncThunk('transaction/ppob',
   async () => {
     const response = await fetchPpobListTransaction();
+    return response;
+  }
+);
+
+export const fetchAllTransactionAsync = createAsyncThunk('transaction/all',
+  async () => {
+    const response = await fetchAllTransaction();
     return response;
   }
 );
@@ -17,6 +24,7 @@ export const fetchPpobListTransactionAsync = createAsyncThunk(
 interface UserState {
   users: User[];
   transactions: PPOBListTransaction[];
+  allTransaction: AllTransactionPayment[],
   userLatestLocations: UserLatestLocation[];
   isLoading: boolean;
   error: string | null;
@@ -24,6 +32,7 @@ interface UserState {
 
 const initialState: UserState = {
   users: [],
+  allTransaction: [],
   transactions: [],
   userLatestLocations: [],
   isLoading: false,
@@ -45,6 +54,9 @@ const userSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    builder.addCase(fetchAllTransactionAsync.fulfilled, (state, action) => {
+      state.allTransaction = action.payload;
+    });
     builder.addCase(fetchPpobListTransactionAsync.fulfilled, (state, action) => {
       state.transactions = action.payload;
     });

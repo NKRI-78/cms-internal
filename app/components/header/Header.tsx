@@ -10,8 +10,10 @@ const Header: React.FC = () => {
 
     const renderTitle = () => {
         switch (pathname) {
-            case "/transaksi-ppob":
-                return <h1 className={`text-2xl font-bold text-whited`}>Transaksi PPOB</h1>;
+            case "/ppob-transaction":
+                return (<h1 className={`text-2xl font-bold text-whited`}>PPOB Transaction</h1>);
+            case "/all-transaction":
+                return (<h1 className={`text-2xl font-bold text-whited`}>All Transaction</h1>);
             default:
                 return <h1></h1>;
         }

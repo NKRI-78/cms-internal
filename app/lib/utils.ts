@@ -1,6 +1,8 @@
 import Cookies from "js-cookie";
 import DOMPurify from "dompurify";
 
+import moment from "moment"
+
 export const getUserId = (): string | undefined => {
     return Cookies.get("user_id");
 };
@@ -18,5 +20,17 @@ export const handleDescriptionTruncate = (description: string, maxLength: number
 };
 
 export const sanitizeHtml = (html: string): string => {
-  return DOMPurify.sanitize(html);
+    return DOMPurify.sanitize(html);
+};
+
+export const formatRupiah = (amount: number | string) => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+    }).format(Number(amount));
+};
+
+export const formatDate = (date: string | Date): string => {
+    return moment(date).format("YYYY-MM-DD");
 };
