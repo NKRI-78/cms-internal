@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: "nextjs-report-marlinda",
+      name: "nextjs-report-internal",
       script: "npm",
       args: "run start",
       env: {
