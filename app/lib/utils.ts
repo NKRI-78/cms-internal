@@ -32,5 +32,5 @@ export const formatRupiah = (amount: number | string) => {
 };
 
 export const formatDate = (date: string | Date): string => {
-    return moment(date).format("YYYY-MM-DD");
+    return moment(date).format("YYYY-MM-DD HH:mm:ss");
 };

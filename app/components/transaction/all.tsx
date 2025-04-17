@@ -41,6 +41,7 @@ const AllTransaction: React.FC = () => {
     return transactions
       .filter((transaction: AllTransactionPayment) => {
         const orderId = transaction.order_id.toString().toLowerCase() || "";
+        const App = transaction.app.toString().toLowerCase() || "";
         return orderId.includes(search)
       })
       .sort(
@@ -71,7 +72,7 @@ const AllTransaction: React.FC = () => {
     },
     {
       name: "Gross Amount",
-      selector: (row: AllTransactionPayment) =>  formatRupiah(row.gross_amount),
+      selector: (row: AllTransactionPayment) => formatRupiah(row.gross_amount),
       sortable: false,
       width: "150px",
     },
@@ -110,7 +111,7 @@ const AllTransaction: React.FC = () => {
     <div className="flex items-center w-full justify-between my-1">
       <input
         type="text"
-        placeholder="Search by Order ID"
+        placeholder="Search by Order ID or App"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         className="border border-gray-300 rounded text-sm text-black p-2 w-1/2"
