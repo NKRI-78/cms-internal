@@ -60,7 +60,7 @@ const AllTransaction: React.FC = () => {
     },
     {
       name: "App",
-      selector: (row: AllTransactionPayment) => row.app,
+      selector: (row: AllTransactionPayment) => row.app.toUpperCase(),
       sortable: false,
       width: "250px",
     },
