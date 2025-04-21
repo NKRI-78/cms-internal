@@ -16,7 +16,7 @@ import {
 import { AllTransactionPayment } from "@interfaces/transaction/all_transaction";
 import { formatDate, formatRupiah } from "@lib/utils";
 
-const AllTransaction: React.FC = () => {
+const AllTransactionTopup: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const transactions = useSelector((state: RootState) => state.users.allTransaction)
   const isLoading = useSelector((state: RootState) => state.users.isLoading);
@@ -99,7 +99,7 @@ const AllTransaction: React.FC = () => {
   useEffect(() => {
     dispatch(setIsLoading(true));
     try {
-      dispatch(fetchAllTransactionAsync(""));
+      dispatch(fetchAllTransactionAsync("top"));
     } catch (error) {
       dispatch(setError((error as Error).message));
     } finally {
@@ -149,4 +149,4 @@ const AllTransaction: React.FC = () => {
   );
 };
 
-export default AllTransaction;
+export default AllTransactionTopup;

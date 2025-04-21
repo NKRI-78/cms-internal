@@ -10,15 +10,15 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   setIsLoading,
   setError,
-  fetchPpobListTransactionAsync,
+  fetchAllTransactionAsync,
 } from "@redux/slices/userSlice";
 
-import { PPOBListTransaction } from "@/app/interfaces/transaction/list_transaction";
-import { formatDate, formatRupiah } from "@/app/lib/utils";
+import { AllTransactionPayment } from "@interfaces/transaction/all_transaction";
+import { formatDate, formatRupiah } from "@lib/utils";
 
-const PPOBTransaction: React.FC = () => {
+const AllTransactionPPOB: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const transactions = useSelector((state: RootState) => state.users.transactions)
+  const transactions = useSelector((state: RootState) => state.users.allTransaction)
   const isLoading = useSelector((state: RootState) => state.users.isLoading);
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -39,10 +39,10 @@ const PPOBTransaction: React.FC = () => {
   const filteredTransaction = useMemo(() => {
     const search = debouncedSearch.toLowerCase();
     return transactions
-      .filter((ppob: PPOBListTransaction) => {
-        const appName = ppob.app?.name.toString().toLowerCase() || "";
-        const invoice = ppob.value.toString().toLowerCase() || "";
-        return appName.includes(search) || invoice.includes(search)
+      .filter((transaction: AllTransactionPayment) => {
+        const orderId = transaction.order_id.toString().toLowerCase() || "";
+        const App = transaction.app.toString().toLowerCase() || "";
+        return orderId.includes(search)
       })
       .sort(
         (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
@@ -52,7 +52,7 @@ const PPOBTransaction: React.FC = () => {
   const columns: any = [
     {
       name: "No",
-      cell: (_: PPOBListTransaction, index: number) => (
+      cell: (_: AllTransactionPayment, index: number) => (
         <span>{(currentPage - 1) * rowsPerPage + index + 1}</span>
       ),
       sortable: false,
@@ -60,40 +60,46 @@ const PPOBTransaction: React.FC = () => {
     },
     {
       name: "App",
-      selector: (row: PPOBListTransaction) => row.app.name,
+      selector: (row: AllTransactionPayment) => row.app.toUpperCase(),
+      sortable: false,
+      width: "250px",
+    },
+    {
+      name: "Order ID",
+      selector: (row: AllTransactionPayment) => row.order_id,
+      sortable: false,
+      width: "250px",
+    },
+    {
+      name: "Gross Amount",
+      selector: (row: AllTransactionPayment) => formatRupiah(row.gross_amount),
       sortable: false,
       width: "150px",
     },
     {
-      name: "No Invoice",
-      selector: (row: PPOBListTransaction) => row.value,
-      sortable: true,
-      width: "250px",
-    },
-    {
-      name: "ID Pel",
-      selector: (row: PPOBListTransaction) => row.idpel,
+      name: "Total Amount",
+      selector: (row: AllTransactionPayment) => formatRupiah(row.total_amount),
       sortable: true,
       width: "150px",
     },
     {
-      name: "Product",
-      selector: (row: PPOBListTransaction) => row.product,
+      name: "Status",
+      selector: (row: AllTransactionPayment) => row.transaction_status,
       sortable: true,
       width: "150px",
     },
     {
       name: "Date",
-      selector: (row: PPOBListTransaction) => formatDate(row.created_at),
+      selector: (row: AllTransactionPayment) => formatDate(row.created_at),
       sortable: true,
       width: "150px",
-    },
+    }
   ];
 
   useEffect(() => {
     dispatch(setIsLoading(true));
     try {
-      dispatch(fetchPpobListTransactionAsync());
+      dispatch(fetchAllTransactionAsync("ppob"));
     } catch (error) {
       dispatch(setError((error as Error).message));
     } finally {
@@ -105,7 +111,7 @@ const PPOBTransaction: React.FC = () => {
     <div className="flex items-center w-full justify-between my-1">
       <input
         type="text"
-        placeholder="Search by App or No Invoice"
+        placeholder="Search by Order ID or App"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         className="border border-gray-300 rounded text-sm text-black p-2 w-1/2"
@@ -143,4 +149,4 @@ const PPOBTransaction: React.FC = () => {
   );
 };
 
-export default PPOBTransaction;
+export default AllTransactionPPOB;

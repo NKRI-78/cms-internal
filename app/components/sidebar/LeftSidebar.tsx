@@ -44,7 +44,15 @@ const LeftSidebar: React.FC = () => {
             </Link>
           </div>
         </li>
-       
+        <li className="mb-4">
+          <Link
+              href="/topup-transaction"
+              className={`hover:text-gray-400 ${pathname === "/topup-transaction" ? "underline" : ""
+            }`}
+          >
+          Topup Transaction
+          </Link>
+        </li>
         <li className="mb-4">
           <Link
               href="/ppob-transaction"

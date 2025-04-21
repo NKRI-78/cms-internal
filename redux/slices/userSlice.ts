@@ -15,8 +15,8 @@ export const fetchPpobListTransactionAsync = createAsyncThunk('transaction/ppob'
 );
 
 export const fetchAllTransactionAsync = createAsyncThunk('transaction/all',
-  async () => {
-    const response = await fetchAllTransaction();
+  async (orderId: string) => {
+    const response = await fetchAllTransaction(orderId);
     return response;
   }
 );

@@ -2,17 +2,17 @@ import React from "react";
 
 import type { Metadata } from "next";
 
-import AllTransactionPPOB from "@components/transaction/ppob";
+import AllTransactionTopup from "@components/transaction/topup";
 
 export const metadata: Metadata = {
   title: "Admin | PPOB Transaction",
   description: "PPOB Transaction",
 };
 
-const TransactionPPOBPage: React.FC = () => {
+const TransactionTopupPage: React.FC = () => {
   return (
-    <AllTransactionPPOB />
+    <AllTransactionTopup />
   );
 };
 
-export default TransactionPPOBPage;
+export default TransactionTopupPage;
