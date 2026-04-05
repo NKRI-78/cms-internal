@@ -1,114 +1,126 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState, useMemo } from "react";
-import DataTable from "react-data-table-component";
+import React, { useEffect, useState, useMemo } from 'react';
+import { useSearchParams } from 'next/navigation';
+import DataTable from 'react-data-table-component';
 
-import { LoadingSpinner } from "@components/loading/Spinner";
+import { LoadingSpinner } from '@components/loading/Spinner';
 
-import { AppDispatch, RootState } from "@redux/store";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  setIsLoading,
-  setError,
-  fetchAllTransactionAsync,
-} from "@redux/slices/userSlice";
+import { AppDispatch, RootState } from '@redux/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { setIsLoading, setError, fetchAllTransactionAsync } from '@redux/slices/userSlice';
 
-import { AllTransactionPayment } from "@interfaces/transaction/all_transaction";
-import { formatDate, formatRupiah } from "@lib/utils";
+import { AllTransactionPayment } from '@interfaces/transaction/all_transaction';
+import { formatDate, formatRupiah } from '@lib/utils';
 
 const AllTransaction: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const transactions = useSelector((state: RootState) => state.users.allTransaction)
+  const searchParams = useSearchParams();
+
+  const transactions = useSelector((state: RootState) => state.users.allTransaction ?? []);
   const isLoading = useSelector((state: RootState) => state.users.isLoading);
 
-  const [searchTerm, setSearchTerm] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [appFilter, setAppFilter] = useState('all');
+
+  useEffect(() => {
+    const urlApp = (searchParams.get('app') || 'all').toLowerCase();
+    setAppFilter(urlApp);
+  }, [searchParams]);
 
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(searchTerm);
-    }, 300); 
+    }, 300);
 
-    return () => {
-      clearTimeout(handler);
-    };
+    return () => clearTimeout(handler);
   }, [searchTerm]);
 
+
+  const appOptions = ['all', 'htci', 'gema', 'atj', 'lingkunganku', 'rezekimasjid', 'saka', 'pgb', 'mrhputih', 'hp3ki', 'marlinda', 'machandais'];
   const filteredTransaction = useMemo(() => {
     const search = debouncedSearch.toLowerCase();
+
     return transactions
       .filter((transaction: AllTransactionPayment) => {
-        const orderId = transaction.order_id.toString().toLowerCase() || "";
-        const App = transaction.app.toString().toLowerCase() || "";
-        return orderId.includes(search)
+        const orderId = transaction.order_id?.toString().toLowerCase() || '';
+        const app = transaction.app?.toString().toLowerCase() || '';
+
+        const bySearch = orderId.includes(search) || app.includes(search);
+        const byApp = appFilter === 'all' ? true : app === appFilter.toLowerCase();
+
+        return bySearch && byApp;
       })
-      .sort(
-        (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-      );
-  }, [transactions, debouncedSearch]);
+      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  }, [transactions, debouncedSearch, appFilter]);
 
   const columns: any = [
     {
-      name: "No",
+      name: 'No',
       cell: (_: AllTransactionPayment, index: number) => (
         <span>{(currentPage - 1) * rowsPerPage + index + 1}</span>
       ),
       sortable: false,
-      width: "70px",
+      width: '70px',
     },
     {
-      name: "App",
-      selector: (row: AllTransactionPayment) => row.app.toUpperCase(),
+      name: 'App',
+      selector: (row: AllTransactionPayment) => row.app?.toUpperCase() || '-',
       sortable: false,
-      width: "250px",
+      width: '250px',
     },
     {
-      name: "Order ID",
+      name: 'Order ID',
       selector: (row: AllTransactionPayment) => row.order_id,
       sortable: false,
-      width: "250px",
+      width: '250px',
     },
     {
-      name: "Gross Amount",
+      name: 'Gross Amount',
       selector: (row: AllTransactionPayment) => formatRupiah(row.gross_amount),
       sortable: false,
-      width: "150px",
+      width: '150px',
     },
     {
-      name: "Total Amount",
+      name: 'Total Amount',
       selector: (row: AllTransactionPayment) => formatRupiah(row.total_amount),
       sortable: true,
-      width: "150px",
+      width: '150px',
     },
     {
-      name: "Status",
+      name: 'Status',
       selector: (row: AllTransactionPayment) => row.transaction_status,
       sortable: true,
-      width: "150px",
+      width: '150px',
     },
     {
-      name: "Date",
+      name: 'Date',
       selector: (row: AllTransactionPayment) => formatDate(row.created_at),
       sortable: true,
-      width: "150px",
-    }
+      width: '150px',
+    },
   ];
 
   useEffect(() => {
-    dispatch(setIsLoading(true));
-    try {
-      dispatch(fetchAllTransactionAsync(""));
-    } catch (error) {
-      dispatch(setError((error as Error).message));
-    } finally {
-      dispatch(setIsLoading(false));
-    }
-  }, []);
+    const fetchData = async () => {
+      dispatch(setIsLoading(true));
+      try {
+        await dispatch(fetchAllTransactionAsync('')).unwrap();
+      } catch (error) {
+        dispatch(setError((error as Error).message));
+      } finally {
+        dispatch(setIsLoading(false));
+      }
+    };
+
+    fetchData();
+  }, [dispatch]);
 
   const subHeaderComponent = (
-    <div className="flex items-center w-full justify-between my-1">
+    <div className="flex items-center w-full justify-between gap-3 my-1">
       <input
         type="text"
         placeholder="Search by Order ID or App"
@@ -116,6 +128,17 @@ const AllTransaction: React.FC = () => {
         onChange={(e) => setSearchTerm(e.target.value)}
         className="border border-gray-300 rounded text-sm text-black p-2 w-1/2"
       />
+      <select
+        value={appFilter}
+        onChange={(e) => setAppFilter(e.target.value)}
+        className="border border-gray-300 rounded text-sm text-black p-2 w-1/3"
+      >
+        {appOptions.map((app) => (
+          <option key={app} value={app}>
+            {app === 'all' ? 'All App' : app.toUpperCase()}
+          </option>
+        ))}
+      </select>
     </div>
   );
 
@@ -133,7 +156,7 @@ const AllTransaction: React.FC = () => {
           defaultSortAsc
           persistTableHead
           subHeader
-          responsive={true}
+          responsive
           subHeaderComponent={subHeaderComponent}
           paginationPerPage={rowsPerPage}
           onChangePage={(page) => setCurrentPage(page)}

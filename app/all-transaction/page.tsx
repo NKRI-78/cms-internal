@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 
 import type { Metadata } from "next";
 import AllTransaction from "@components/transaction/all";
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 const AllTransactionPage: React.FC = () => {
   return (
-    <AllTransaction/>
+    <Suspense fallback={<div className="p-4">Loading...</div>}><AllTransaction/></Suspense>
   );
 };
 
